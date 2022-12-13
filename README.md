@@ -6,3 +6,5 @@ The grammar is designed to parse some sentences while analysing their sentiment 
 
 The grammar structure covers sentences with compound and complex structure, negation, conjunctions.
 Also, Conjunction phrases with AND, OR, BUT for NP, VP, and Adjective phrases (ADJP)
+
+Sample sentence: "The city, where I live, is very clean"
