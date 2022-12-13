@@ -1,0 +1,336 @@
+## Natural Language Processing
+## Comp 6751 
+## Concordia University 
+## Fall 2022
+## Feature_based grammar for polarity dataset
+##
+## Name: Saeed Jamali
+## ID: 40093292
+
+% start S
+
+# ###################
+# Grammar Productions
+# ###################
+
+# S expansion productions
+S[SNTMNT=?s] -> NP[SNTMNT=?s] VP[SNTMNT=?s]
+S[SNTMNT=?s] -> NP[SNTMNT=nut] VP[SNTMNT=?s]
+S[SNTMNT=?s] -> NP[SNTMNT=?s] VP[SNTMNT=nut]
+S[SNTMNT=neg] -> NP[SNTMNT=pos] VP[SNTMNT=neg]
+S[SNTMNT=pos] -> NP[SNTMNT=neg] VP[SNTMNT=pos]
+
+# Conjuctions (For, And, Nor, But, Or, Yet, So) for S
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] FOR S[SNTMNT=?s]
+S[SNTMNT=neg] -> S[SNTMNT=neg] FOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] FOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] FOR S[SNTMNT=nut]
+S[SNTMNT=pos] -> S[SNTMNT=pos] FOR S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] FOR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] FOR S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] AND S[SNTMNT=?s]
+S[SNTMNT=nut] -> S[SNTMNT=neg] AND S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] AND S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] AND S[SNTMNT=nut]
+S[SNTMNT=nut] -> S[SNTMNT=pos] AND S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] AND S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=neg] AND S[SNTMNT=nut]
+
+# Example: Alice does not miss a day of work, nor does she miss a day of school.
+S[SNTMNT=?s] -> S[SNTMNT=?s] NOR S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=nut] NOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] NOR S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=nut] NOR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] NOR S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] BUT S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=neg] BUT S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] BUT S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] BUT S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=pos] BUT S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] BUT S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] BUT S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] OR S[SNTMNT=?s]
+S[SNTMNT=nut] -> S[SNTMNT=neg] OR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] OR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] OR S[SNTMNT=nut]
+S[SNTMNT=nut] -> S[SNTMNT=pos] OR S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] OR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] OR S[SNTMNT=nut]
+
+# Example: The weather was cold, yet sunny.
+S[SNTMNT=?s] -> S[SNTMNT=?s] YET S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=neg] YET S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] YET S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] YET S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=pos] YET S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] YET S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] YET S[SNTMNT=nut]
+
+#Example: It was a hard match, so I'm very tired.
+S[SNTMNT=?s] -> S[SNTMNT=?s] SO S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=nut] SO S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] SO S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=nut] SO S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] SO S[SNTMNT=nut]
+
+# With Punctuation
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA FOR S[SNTMNT=?s]
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA FOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA FOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA FOR S[SNTMNT=nut]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA FOR S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA FOR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA FOR S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA AND S[SNTMNT=?s]
+S[SNTMNT=nut] -> S[SNTMNT=neg] COMMA AND S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA AND S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA AND S[SNTMNT=nut]
+S[SNTMNT=nut] -> S[SNTMNT=pos] COMMA AND S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA AND S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA AND S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA NOR S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA NOR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA NOR S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA NOR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA NOR S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA BUT S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=neg] COMMA BUT S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA BUT S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA BUT S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=pos] COMMA BUT S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA BUT S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA BUT S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA OR S[SNTMNT=?s]
+S[SNTMNT=nut] -> S[SNTMNT=neg] COMMA OR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA OR S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA OR S[SNTMNT=nut]
+S[SNTMNT=nut] -> S[SNTMNT=pos] COMMA OR S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA OR S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA OR S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA YET S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=neg] COMMA YET S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA YET S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA YET S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=pos] COMMA YET S[SNTMNT=neg]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA YET S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA YET S[SNTMNT=nut]
+
+S[SNTMNT=?s] -> S[SNTMNT=?s] COMMA SO S[SNTMNT=?s]
+S[SNTMNT=pos] -> S[SNTMNT=nut] COMMA SO S[SNTMNT=pos]
+S[SNTMNT=pos] -> S[SNTMNT=pos] COMMA SO S[SNTMNT=nut]
+S[SNTMNT=neg] -> S[SNTMNT=nut] COMMA SO S[SNTMNT=neg]  
+S[SNTMNT=neg] -> S[SNTMNT=neg] COMMA SO S[SNTMNT=nut]
+
+
+# NP expansion productions
+NP[SNTMNT=?s] -> Nom[SNTMNT=?s] | DT Nom[SNTMNT=?s]
+Nom[SNTMNT=?s] -> NN[SNTMNT=?s] | NN Nom[SNTMNT=?s]
+Nom[SNTMNT=?s] -> NNS[SNTMNT=?s] | NNP[SNTMNT=nut] | PRP[SNTMNT=?s] | DP[SNTMNT=?s]
+Nom[SNTMNT=?s] -> PRZ Nom[SNTMNT=?s]
+Nom[SNTMNT=?s] -> ADJP[SNTMNT=?s] Nom | DT ADJP[SNTMNT=?s] Nom
+
+# Conjuctions (And, But, Or) for NP
+NP[SNTMNT=?s] -> NP[SNTMNT=?s] AND NP[SNTMNT=?s]
+NP[SNTMNT=pos] -> NP[SNTMNT=pos] AND NP[SNTMNT=nut] 
+NP[SNTMNT=pos] -> NP[SNTMNT=nut] AND NP[SNTMNT=pos]
+NP[SNTMNT=neg] -> NP[SNTMNT=neg] AND NP[SNTMNT=nut] 
+NP[SNTMNT=neg] -> NP[SNTMNT=nut] AND NP[SNTMNT=neg]
+NP[SNTMNT=nut] -> NP[SNTMNT=neg] AND NP[SNTMNT=pos] 
+NP[SNTMNT=nut] -> NP[SNTMNT=pos] AND NP[SNTMNT=neg]
+
+NP[SNTMNT=?s] -> NP[SNTMNT=?s] BUT NP[SNTMNT=?s]
+NP[SNTMNT=pos] -> NP[SNTMNT=neg] BUT NP[SNTMNT=pos]
+NP[SNTMNT=pos] -> NP[SNTMNT=nut] BUT NP[SNTMNT=pos]
+NP[SNTMNT=neg] -> NP[SNTMNT=pos] BUT NP[SNTMNT=neg]
+NP[SNTMNT=neg] -> NP[SNTMNT=nut] BUT NP[SNTMNT=neg]  
+NP[SNTMNT=pos] -> NP[SNTMNT=pos] BUT NP[SNTMNT=nut]
+NP[SNTMNT=neg] -> NP[SNTMNT=neg] BUT NP[SNTMNT=nut]
+
+NP[SNTMNT=?s] -> NP[SNTMNT=?s] OR NP[SNTMNT=?s]
+NP[SNTMNT=pos] -> NP[SNTMNT=pos] OR NP[SNTMNT=nut] 
+NP[SNTMNT=pos] -> NP[SNTMNT=nut] OR NP[SNTMNT=pos]
+NP[SNTMNT=neg] -> NP[SNTMNT=neg] OR NP[SNTMNT=nut] 
+NP[SNTMNT=neg] -> NP[SNTMNT=nut] OR NP[SNTMNT=neg]
+NP[SNTMNT=nut] -> NP[SNTMNT=pos] OR NP[SNTMNT=neg] 
+NP[SNTMNT=nut] -> NP[SNTMNT=neg] OR NP[SNTMNT=pos]
+
+# VP expansion productions
+VP[SNTMNT=?s]-> V[SNTMNT=?s] | V NP[SNTMNT=?s]
+VP[SNTMNT=?s]-> NP[SNTMNT=?s] V
+VP[SNTMNT=?s] -> V[SNTMNT=?s] ADVP
+VP[SNTMNT=?s] -> V ADJP[SNTMNT=?s] 
+VP[SNTMNT=?s] -> V RBR[SNTMNT=?s]
+VP[SNTMNT=?s] -> V DT RBRS[SNTMNT=?s]
+VP[SNTMNT=?s] -> AUX VP[SNTMNT=?s] | MD VP[SNTMNT=?s]
+VP[SNTMNT=?s] -> V NP NP[SNTMNT=?s]
+
+# Negation for VP
+VP[SNTMNT=pos] -> V NOT NP[SNTMNT=neg]
+VP[SNTMNT=neg] -> V NOT NP[SNTMNT=pos]
+VP[SNTMNT=nut] -> V NOT NP[SNTMNT=nut]
+VP[SNTMNT=pos] -> AUX NOT VP[SNTMNT=neg]
+VP[SNTMNT=neg] -> AUX NOT VP[SNTMNT=pos]
+VP[SNTMNT=nut] -> AUX NOT VP[SNTMNT=nut]
+VP[SNTMNT=pos] -> MD NOT VP[SNTMNT=neg]
+VP[SNTMNT=neg] -> MD NOT VP[SNTMNT=pos]
+VP[SNTMNT=nut] -> MD NOT VP[SNTMNT=nut]
+
+# Conjuctions (And, But, Or) for NP
+VP[SNTMNT=?s] -> VP[SNTMNT=?s] AND VP[SNTMNT=?s]
+VP[SNTMNT=pos] -> VP[SNTMNT=pos] AND VP[SNTMNT=nut] 
+VP[SNTMNT=pos] -> VP[SNTMNT=nut] AND VP[SNTMNT=pos]
+VP[SNTMNT=neg] -> VP[SNTMNT=neg] AND VP[SNTMNT=nut] 
+VP[SNTMNT=neg] -> VP[SNTMNT=nut] AND VP[SNTMNT=neg]
+VP[SNTMNT=nut] -> VP[SNTMNT=neg] AND VP[SNTMNT=pos] 
+VP[SNTMNT=nut] -> VP[SNTMNT=pos] AND VP[SNTMNT=neg]
+
+VP[SNTMNT=?s] -> VP[SNTMNT=?s] BUT VP[SNTMNT=?s]
+VP[SNTMNT=pos] -> VP[SNTMNT=neg] BUT VP[SNTMNT=pos]
+VP[SNTMNT=pos] -> VP[SNTMNT=nut] BUT VP[SNTMNT=pos]
+VP[SNTMNT=pos] -> VP[SNTMNT=pos] BUT VP[SNTMNT=nut]
+VP[SNTMNT=neg] -> VP[SNTMNT=pos] BUT VP[SNTMNT=neg]
+VP[SNTMNT=neg] -> VP[SNTMNT=nut] BUT VP[SNTMNT=neg]  
+VP[SNTMNT=neg] -> VP[SNTMNT=neg] BUT VP[SNTMNT=nut]
+
+VP[SNTMNT=?s] -> VP[SNTMNT=?s] OR VP[SNTMNT=?s]
+VP[SNTMNT=nut] -> VP[SNTMNT=pos] OR VP[SNTMNT=neg] 
+VP[SNTMNT=nut] -> VP[SNTMNT=neg] OR VP[SNTMNT=pos]
+VP[SNTMNT=pos] -> VP[SNTMNT=pos] OR VP[SNTMNT=nut]
+VP[SNTMNT=neg] -> VP[SNTMNT=neg] OR VP[SNTMNT=nut]
+VP[SNTMNT=neg] -> VP[SNTMNT=nut] OR VP[SNTMNT=neg]
+VP[SNTMNT=pos] -> VP[SNTMNT=nut] OR VP[SNTMNT=pos]
+
+# PP expansion productions
+NP[SNTMNT=?s] -> NP[SNTMNT=?s] PP[SNTMNT=nut]
+NP[SNTMNT=pos] -> NP PP[SNTMNT=pos]
+NP[SNTMNT=neg] -> NP PP[SNTMNT=neg]
+
+# Relative-Clause expansion productions
+Rel-Cl[SNTMNT=?s] -> WP VP[SNTMNT=?s] | COMMA WP VP[SNTMNT=?s] COMMA
+NP[SNTMNT=?s] -> DT Nom[SNTMNT=?s] Rel-Cl[SNTMNT=nut] | Nom[SNTMNT=?s] Rel-Cl[SNTMNT=nut]
+NP[SNTMNT=pos] -> DT Nom Rel-Cl[SNTMNT=pos] | Nom Rel-Cl[SNTMNT=pos]
+NP[SNTMNT=neg] -> DT Nom Rel-Cl[SNTMNT=neg] | Nom Rel-Cl[SNTMNT=neg]
+
+# Subordinate clause expansion productions
+VP[SNTMNT=?s] -> VP[SNTMNT=?s] SBAR[SNTMNT=nut]
+VP[SNTMNT=pos] -> VP SBAR[SNTMNT=pos]
+VP[SNTMNT=neg] -> VP SBAR[SNTMNT=neg]
+SBAR[SNTMNT=?s] -> COMMA PP S[SNTMNT=?s]
+SBAR[SNTMNT=?s] -> SCONJ S[SNTMNT=?s]
+
+# Adjective Phrase expansion productions
+ADJP[SNTMNT=?s] -> JJ[SNTMNT=?s] 
+ADJP[SNTMNT=?s] -> JJ ADJP[SNTMNT=?s]
+ADJP[SNTMNT=?s] -> ADVP ADJP[SNTMNT=?s]
+
+ADJP[SNTMNT=?s] -> ADJP[SNTMNT=?s] AND ADJP[SNTMNT=?s] 
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=neg] AND ADJP[SNTMNT=pos]
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=nut] AND ADJP[SNTMNT=pos]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=pos] AND ADJP[SNTMNT=neg]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=nut] AND ADJP[SNTMNT=neg]  
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=pos] AND ADJP[SNTMNT=nut]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=neg] AND ADJP[SNTMNT=nut]
+
+ADJP[SNTMNT=?s] -> ADJP[SNTMNT=?s] OR ADJP[SNTMNT=?s]
+ADJP[SNTMNT=nut] -> ADJP[SNTMNT=pos] OR ADJP[SNTMNT=neg] 
+ADJP[SNTMNT=nut] -> ADJP[SNTMNT=neg] OR ADJP[SNTMNT=pos]
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=pos] OR ADJP[SNTMNT=nut] 
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=neg] OR ADJP[SNTMNT=nut]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=nut] OR ADJP[SNTMNT=neg] 
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=nut] OR ADJP[SNTMNT=pos]
+
+ADJP[SNTMNT=?s] -> ADJP[SNTMNT=?s] BUT ADJP[SNTMNT=?s]
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=neg] BUT ADJP[SNTMNT=pos]
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=nut] BUT ADJP[SNTMNT=pos]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=pos] BUT ADJP[SNTMNT=neg]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=nut] BUT ADJP[SNTMNT=neg]  
+ADJP[SNTMNT=pos] -> ADJP[SNTMNT=pos] BUT ADJP[SNTMNT=nut]
+ADJP[SNTMNT=neg] -> ADJP[SNTMNT=neg] BUT ADJP[SNTMNT=nut]
+
+# Adverbial Phrase expansion productions
+ADVP[SNTMNT=?s] -> RB[SNTMNT=?s] | RB ADVP[SNTMNT=?s] | IN[SNTMNT=?s] NP[SNTMNT=?s]
+
+# Prepositional Phrase expansion productions
+PP[SNTMNT=?s] -> IN NP[SNTMNT=?s] | RB PP[SNTMNT=?s] | IN PP[SNTMNT=?s]
+
+# ###################
+# Lexical Productions
+# ###################
+
+# Nouns
+NN[SNTMNT=nut] -> 'someone' | 'netflix' | 'memory' | 'director' | 'homework' | 'there' | 'impact' | 'city' | 'intentions' | 'shot' | 'ending' | 'walk' | 'wood' | 'destination' | 'children' | 'office' | 'revenue'| 'numbers' | 'apple' | 'human' | 'way' | 'tv' | 'performance' | 'documentary' | 'movie' |'source' | 'collection' | 'class' | 'story' | 'fridge' | 'activity'| 'people' | 'kid' | 'films' | 'tropes' | 'book' | 'desk' | 'coffee' | 'tea' | 'refrigerator' | 'everything'
+NN[SNTMNT=postive] -> 'happiness' | 'calmness' | 'positive' | 'politeness'
+NN[SNTMNT=neg] ->'holocaust' | 'mess' | 'hazard' | 'problem'
+
+# Proper Nouns
+NNP[SNTMNT=nut] -> "Mary" | "Alice" | "John" | "Mick" | "jackson" | "Williams" | 'David'
+
+# Verbs
+V[SNTMNT=nut] -> 'is' | 'does' | 'did' | 'are' | 'were' | 'was' | 'saw' | 'has'
+V[SNTMNT=nut] ->  'ate' | 'watched' | 'liked' | 'loaded' | 'took' | 'promised' | 'put' | 'generates' | 'write' | 'work' | 'understand' | 'be' | 'starts' | 'told' | 'created' | 'live'
+AUX -> 'have' | 'has'| 'had' | 'do' | 'does' | 'did' | 'am' | 'is' | 'are' | 'was' | 'were' | 'being' | 'been'
+MD -> 'shall'| 'should' | 'can' | 'could' | 'will' | 'would' | 'may' | 'must' | 'might'
+
+# Adjectives
+JJ[SNTMNT=pos] -> 'clean' | 'calm' | 'funny' | 'compelling' | 'happy' | 'well-intentioned' | 'sweet' | 'perfect' | 'entertaining' | 'healthy' | 'revelatory' | 'good' | 'delighted' | 'great'
+JJ[SNTMNT=neg] -> 'sad' | 'horrible' | 'bad' | 'manipulative' | 'gut-wrenching'| 'cliched' | 'dramatic' | 'ugly'| 'hard' | 'gross' | 'improvised' | 'dull' | 'scary' | 'flat' | 'loose' | 'rancid'
+JJ[SNTMNT=nut] -> 'short' | 'little' | 'low' | 'tiny' | 'hot' | 'wide' | 'long' | 'busy' | 'other' | 'quiet' | 'main'
+
+# Adverbs
+RB[SNTMNT=neg] -> 'unforgivingly' | 'shamelessly' | 'extremely' | 'badly' | 'sadly'
+RB[SNTMNT=pos] -> 'certainly' | 'beautifully' | 'delicately' | 'surely' | 'promisingly' | 'successfully'
+RB[SNTMNT=nut] -> 'mainly' | 'too' | 'fairly' | 'finally' | 'largely' | 'purely' | 'sufficiently' | 'simply' | 'very' | 'far' | 'all' | 'really'
+
+# Comparative Adverbs
+RBR[SNTMNT=pos] -> 'better'
+RBR[SNTMNT=neg] -> 'worse'
+
+# Superlative Adverbs
+RBRS[SNTMNT=pos] -> 'best'
+RBRS[SNTMNT=pos] -> 'worst'
+
+# Possessive Pronouns
+PRZ[SNTMNT=nut] -> 'my' | 'your' | 'our' | 'her' | 'his' | 'their' | 'its'
+
+# Personal Pronouns
+PRP[SNTMNT=nut] -> 'I' | 'me' | 'you' | 'he' | 'He' | 'she' | 'She' | 'him' | 'her' | 'we' | 'We' | 'us' | 'they' | 'They' | 'them' | 'it' | 'It'
+
+# Demonstrative Pronouns
+DP[SNTMNT=nut] -> 'that' | 'this' | 'these' | 'those' | 'This' | 'That' | 'These' | 'Those'
+
+# Wh Pronouns
+WP[SNTMNT=nut] -> 'why' | 'what' | 'who' | 'where' | 'when' | 'how many' | 'how much' | 'which'
+
+# Coordinating Conjunctions
+FOR -> 'for' | 'For'
+AND -> 'and' | 'And'
+NOR -> 'nor' | 'Nor'
+BUT -> 'but' | 'But'
+OR -> 'or' | 'Or'
+YET -> 'yet' | 'Yet'
+SO -> 'so' | 'So'
+
+# Subordinating Cunjunctions
+SCONJ -> 'that' | 'as' | 'because' | 'since' | 'though' | 'when' | 'although' | 'that' | 'while' | 'if'
+
+# Prepositions
+IN[SNTMNT=nut] -> 'about' | 'at' | 'under' | 'over' | 'after' | 'behind' | 'with' | 'because' | 'by' | 'of' | 'on' | 'in' | 'from' | 'to' | 'as'
+
+# Negation
+NOT -> 'not' | "n't"
+
+# Determiner
+DT ->  'The'| 'the' | 'an' | 'a' | 'This' | 'this' | 'that' | 'these' | 'those'
+
+# Punctuations
+COMMA -> ','
